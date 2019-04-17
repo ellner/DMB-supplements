@@ -1,0 +1,32 @@
+load("linearalgebra");
+load("eigen"); 
+
+/* Rosenzweig-MacArthur model */
+dxdt:x*(1-x/K)-x*y/(1+x);
+dydt:b*y*(x/(1+x)-a);
+
+out: solve([dxdt,dydt],[x,y]);
+J: jacobian([dxdt,dydt],[x,y]);
+
+J0: subst(out[1],J);   
+/* unstable */
+
+Jx: subst(out[3],J); 
+/* stable when K/(1+K)<a, so  */
+/* loses stability when interior equilibrium becomes positive */
+
+Jxy: ratsimp(subst(out[4],J)); 
+/* Not pretty */
+
+Dxy: ratsimp(determinant(Jxy)); 
+Txy: ratsimp(mat_trace(Jxy)); 
+
+ratsimp(subst(a=K/(1+K),Dxy)); 
+ratsimp(diff(Dxy,K)); 
+
+/* zero: so Dxy>0 when (x*,y*) exists */
+
+ratsimp(subst(a=K/(1+K),Txy)); 
+ratsimp(diff(Txy,K)); 
+
+/* T = -1, so (x*,y*) is born as a node */

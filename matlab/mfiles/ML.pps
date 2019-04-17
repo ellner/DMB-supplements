@@ -1,0 +1,12 @@
+%% PPLANE file %%
+
+H.name = 'ML.pps';
+H.xvar = 'v';
+H.yvar = 'w';
+H.xder = '(1/20)* (90-gca*0.5*(1+tanh((v+1.2)/18))*(v-120)-8*w*(v+84)-2*(v+60))';
+H.yder = ' phi*(0.5*(1+tanh((v-2)/30))-w)*cosh((v-2)/60)';
+H.pname = {'gca','','phi','','',''};
+H.pval = {'4.4','','0.04','','',''};
+H.fieldtype = 'arrows';
+H.npts = 20;
+H.wind = [-60           40            0          0.6];

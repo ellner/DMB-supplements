@@ -1,0 +1,12 @@
+*.Rproj.user
+*.Rhistory
+*.Rapp.history
+*.DS_Store
+*.aux
+*.blg
+*.dvi
+*.idx
+*.log
+*.toc
+*.synctex.gz
+*-converted-to.pdf

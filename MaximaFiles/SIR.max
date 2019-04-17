@@ -1,0 +1,40 @@
+load("linearalgebra"); load("eigen"); 
+
+/* Rescaled SIR model */
+dX: mu*(1-X)-L*X;
+dL: (gamma + mu)*L*(R0*X-1);
+
+out: solve([dX,dL],[X,L]);
+
+J: jacobian([dX,dL],[X,L]);
+J0: subst(out[1],J);   
+/* unstable when R0 > 1*/
+/* loses stability when interior equilibrium becomes positive */
+
+Je: subst(out[2],J); 
+
+Te: factor(mat_trace(Je)); 
+De: determinant(Je); 
+/* Always stable when R0>1, because Det > 0, Trace < 0 */
+
+/* What kind of stable equilibrium is it? Look at T^2/(4D) */
+Q: factor((Te^2)/(4*De)); 
+
+/* Q>>1 when R0 is near 1, therefore it is "born" as a stable node */
+/* Q>>1 also when R0 is very large, so it is again a stable node */
+/* But what happens in between? */
+
+/* plot the dependence of Q on R0 */
+plot2d(x^2/(x-1), [x,1.01,5],[y,0,25]); 
+
+/* Find where Q is minimized as a function of R0 */
+z: x^2/(x-1); factor(diff(z,x)); 
+
+/* The minimum is at R0=2 */
+Qmin:subst(R0=2,Q); 
+
+/* suppose the disease lasts about 2 weeks and people live 60 years */
+Q1:subst([mu=1/60,gamma=25],Q); 
+
+/* plot the dependence on R0 */
+plot2d(Q1, [R0,1.01,5000],[y,0,1]); 
