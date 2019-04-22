@@ -1,0 +1,109 @@
+%%
+%% For latex -> dvi -> PS or PDF 
+%% Works in PCTeX 5 or XeLaTeX in TeXworks 
+%%
+\documentclass [11pt]{article}
+\usepackage {amssymb,amsmath,graphicx,enumitem}
+
+\usepackage[vmargin=1in,hmargin=1in]{geometry}
+
+\setlength{\parskip}{.1in}  
+\setlength{\parindent}{0.0in}  
+
+%\renewcommand{\baselinestretch}{2.0} 
+\renewcommand{\floatpagefraction}{0.9}
+\renewcommand{\topfraction}{0.99}
+\renewcommand{\textfraction}{0.1}
+
+\newcommand{\ttt}[1]{\texttt{#1}}
+\newcommand{\vp}{\vspace{.20in}}
+\newcommand{\bi}{\begin{itemize} \vspace*{-0.1in}}
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}} 
+\newcommand{\ba}{\begin{equation} \begin{aligned}}
+\newcommand{\ea}{\end{aligned} \end{equation}}
+\newcommand{\bracket}[1]{\left\langle{#1}\right\rangle}
+\newcommand{\twovec}[2]{\begin{pmatrix} {#1} \\ {#2} \end{pmatrix}}
+\newcommand{\twomat}[4]{\begin{pmatrix} {#1} & {#2} \\ {#3} & {#4}\end{pmatrix}}
+
+\pagestyle{empty}
+
+\newcommand{\tab}{\hspace*{0.5in}}
+
+\sloppy 
+
+\def\X{\mathbf{X}}
+\def\A{\mathbf{A}}
+\def\B{\mathbf{B}}
+\def\C{\mathbf{C}}
+\def\D{\mathbf{D}}
+%\def\S{\mathbf{S}}
+\def\E{\mathbf{E}}
+\def\I{\mathbf{I}}
+\def\R{\mathbf{R}}
+\def\N{\mathbf{N}}
+\def\M{\mathbf{M}}
+\def\L{\mathbf{L}}
+
+\def\a{\mathbf{a}}
+\def\c{\mathbf{c}}
+\def\e{\mathbf{e}}
+\def\f{\mathbf{f}}
+\def\k{\mathbf{k}}
+\def\x{\mathbf{x}}
+\def\y{\mathbf{y}}
+\def\b{\mathbf{b}}
+\def\u{\mathbf{u}}
+\def\v{\mathbf{v}}
+\def\w{\mathbf{w}}
+\def\g{\mathbf{g}}
+\def\h{\mathbf{h}}
+\def\n{\mathbf{n}}
+\def\p{\mathbf{p}}
+\def\o{\mathbf{o}}
+
+\begin{document}
+\begin{center}
+\textbf{\large{BIOEE/MATH 3620 Dynamic Models in Biology}} \\
+\textbf{Eigenvalue sensitivities and control of thistle populations} \\ 
+\end{center}
+
+The goal of this exercise is to let you see for yourself that the population growth rate
+$\lambda$ is more sensitive to changes in some matrix entries than others. 
+The objects of study are two matrix models created in the script \texttt{ThistleMatrices.R} on Blackboard, 
+based on population studies of the agricultural weed \emph{Carduus nutans} (nodding thistle). 
+
+(i) \emph{Carduus nutans} in Australia. The classes are Seeds in the seedbank, and Small, 
+Medium, and Large thistles. 
+\begin{verbatim} 
+ 0.4400 6.0000 67.400 183.100
+ 0.0048 0.4400  3.040   8.300
+ 0.0000 0.2100  0.042   0.083
+ 0.0000 0.0089  0.031   0.014
+\end{verbatim} 
+
+(ii) \emph{Carduus nutans} in New Zealand; same classes.  
+\begin{verbatim}
+0.038 8.2500 179.400 503.1
+0.180 1.0900  22.200  62.2
+0.000 0.0091   0.000   0.0
+0.000 0.0056   0.022   0.0
+\end{verbatim} 
+
+You will carry out a computational experiment comparing the effects on population growth, and on long-term 
+population growth rate $\lambda$, of different perturbations to matrix elements -- and turn in a brief writeup
+of your findings. 
+\begin{enumerate} 
+\item[(a)] Compute the two elasticity matrices. 
+\item[(b)] Using the elasticity matrices as your guide, identify (for one of the two matrices) two entries where you 
+expect that a relative perturbation to one of the two entries (e.g., a 20\% decrease in the matrix element) will have a 
+small impact on $\lambda$, while the same relative perturbation of the other entry will have 
+a large impact on $\lambda$. Confirm this by computing what effect the perturbations have on (i) the dominant
+eigenvalue $\lambda$, and on (ii) population growth over 25 years. 
+\item[(c)] Again using the elasticity matrices as your guide, compare the effects of doing the same  
+matrix perturbation in Australia and NZ (e.g., a 20\% decrease in the same matrix element), 
+choosing an element where you expect that the effect on $\lambda$ will be relatively small in one location, and 
+relatively large in the other. 
+\end{enumerate} 
+
+\end{document} 
