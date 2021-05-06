@@ -201,6 +201,33 @@ jacobianAtXY <- function(fun,x=NULL, y=NULL,inc=1e-7){
   return(matrix( c(A,B,C,D ),2,2,byrow=T))
 }
 
+findcycle=function(fun.lsoda,parms,maxtime=100) {
+	x0=locator(n=1); x0=c(x0$x,x0$y); # fixed point
+	x0=newton(fun.lsoda,x0,parms)$x; 
+	points(x0[1],x0[2],type="p",col="red",pch=1,lwd=2); 
+	xc=locator(n=1); xc=c(xc$x,xc$y); # candidate point on orbit
+	points(xc[1],xc[2],type="p",col="red",pch=1,lwd=2); 
+	
+    ### consider initial conditions on the ray from the fixed point to the 
+    ### candidate point on the orbit. On a long orbit from each initial point, 
+    ### find the closest return to the initial point 
+	rfac=seq(0.8,1.2,length=20); rhomin=numeric(20); 
+    for(i in 1:20) {
+		x1=x0+rfac[i]*(xc-x0); 
+		out=lsoda(times=seq(0,maxtime,length=1000),y=x1,func=fun.lsoda,parms=parms)
+		rho=(out[,2]-x1[1])^2 + (out[,3]-x1[2])^2; 
+        drho=diff(rho); 
+        e = which(drho<0); e = c(e,e+1); 
+		rhomin[i]=sqrt(min(rho[e]));
+	}
+    ## Interpolate to find the radius at which the return distance is minimal 
+   	rfun=splinefun(rfac,rhomin);
+	root=optimize(f=rfun,interval=range(rfac))$minimum
+	x1=x0+root*(xc-x0); 	
+	out=lsoda(times=seq(0,maxtime,by=0.1),y=x1,func=fun.lsoda,parms=parms)
+	points(out[,2],out[,3],col="red",lty=2,type="l"); 
+}	
+
 # GUI-challenged version of Polking's pplane.m for planar vector fields.
 # The function fun() defining the vector field must be in the format: input
 # arguments are (x,y,parms), the return is the vector field *as a vector*
@@ -215,34 +242,36 @@ Rpplane=function(fun,xlim,ylim,parms=NULL,add=FALSE,ngrid=5,maxtime=100,dt=0.02,
 	"5: Start Backward trajectory (click on plot)",
 	"6: Extend current trajectory",
 	"7: Local S/U manifolds for saddle (click on plot)",
-     "8: Grid of trajectories",
-	"9: Exit",
-	"10: Save plot as PDF"),
+    "8: Grid of trajectories",
+    "9: Search for cycle (requires 2 mouse clicks: fixed pt & cycle pt)",
+	"10: Exit",
+	"11: Save plot as PDF"),
 	title = "R-pplane: select action");
-	j=substr(jl,1,2);
-    if(j=="1:") {phasearrows(fun=fun,xlims=xlim,ylims=ylim,parms=parms,add=add); add=TRUE}
-	if(j=="2:") {nullclines(fun=fun,xlims=xlim,ylims=ylim,parms=parms,add=add); add=TRUE};
-    if(j=="3:") {xbar=newton(fun.lsoda,parms=parms,plotit=TRUE); }
-	if(j=="4:") {
+	j=substr(jl,1,3);
+    if(j=="1: ") {phasearrows(fun=fun,xlims=xlim,ylims=ylim,parms=parms,add=add); add=TRUE}
+	if(j=="2: ") {nullclines(fun=fun,xlims=xlim,ylims=ylim,parms=parms,add=add); add=TRUE};
+    if(j=="3: ") {xbar=newton(fun.lsoda,parms=parms,plotit=TRUE); }
+	if(j=="4: ") {
 		x=locator(n=1);
 		out=ode(times=seq(0,maxtime,dt),y=c(x$x,x$y),func=fun.lsoda,parms=parms,method=solver);
 		points(out[,2],out[,3],type="l",lwd=2,col="purple");
 	}
-	if(j=="5:") {
+	if(j=="5: ") {
 		x=locator(n=1);
 		out=ode(times=seq(0,-maxtime,-dt),y=c(x$x,x$y),func=fun.lsoda,parms=parms,method=solver);
 		points(out[,2],out[,3],type="l",lwd=2,col="grey20");
 	}
-	if(j=="6:") {
+	if(j=="6: ") {
 		nt=dim(out)[1]; x=out[nt,2:3]; times=out[,1];
 	 	dt=times[2]-times[1]; pcol=ifelse(dt>0,"purple","grey20");
 		out=ode(times=out[,1],y=out[nt,2:3],func=fun.lsoda,parms=parms,method=solver);
 		  points(out[,2],out[,3],type="l",lwd=2,col=pcol);
 	}
-    if(j=="7:") {DrawManifolds(fun.lsoda,parms=parms,maxtime=maxtime,dt=dt,solver=solver) }
-	if(j=="8:") {grid(fun.lsoda,xlim=xlim,ylim=ylim,parms=parms,ngrid=ngrid,add=add,solver=solver); add=TRUE}
-	if(j=="9:") menu.go=0
-	if(j=="10") dev.copy2pdf(file="PPlane.pdf")
+    if(j=="7: ") {DrawManifolds(fun.lsoda,parms=parms,maxtime=maxtime,dt=dt,solver=solver) }
+	if(j=="8: ") {grid(fun.lsoda,xlim=xlim,ylim=ylim,parms=parms,ngrid=ngrid,add=add,solver=solver); add=TRUE}
+    if(j=="9: ") {findcycle(fun.lsoda,parms=parms,maxtime=maxtime); add=TRUE} 
+	if(j=="10:") menu.go=0
+	if(j=="11:") dev.copy2pdf(file="PPlane.pdf")
   }
 }
 

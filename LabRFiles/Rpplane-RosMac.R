@@ -18,6 +18,7 @@ RosMac=function(n1,n2,parms) {
 }
 y_label <- "Prey"; x_label <- "Predators"; main_title <- "Rosenzweig-MacArthur model" 
 
-parms=c(r1=1,d2=1,a1=2,a2=2,B=200,K=100) 
-Rpplane(fun=RosMac, xlim=c(-0.02,220),ylim=c(-0.01,250),parms=parms); 
+parms=c(r1=1,d2=1,a1=2,a2=2,B=200,K=700) 
+Rpplane(fun=RosMac, xlim=c(-0.02,720),ylim=c(-0.01,350),parms=parms); 
 
+fun.lsoda=function(t,y,p) {dx=RosMac(y[1],y[2],parms=p); return(list(dx))}
