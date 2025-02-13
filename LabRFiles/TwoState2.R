@@ -20,7 +20,7 @@ require(deSolve);
 R=0.3; L=0.2; dt=0.1; tmax=25; 
 
 # initial condition
-nL0=250; nR0=0; ntot=nL0+nR0; 
+nL0=10^6; nR0=0; ntot=nL0+nR0; 
 
 # movement probabilities per time step 
 Rdt=R*dt; Ldt=L*dt;
